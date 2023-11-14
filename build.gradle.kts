@@ -2,3 +2,11 @@
 plugins {
     id("com.android.application") version "8.1.0" apply false
 }
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath ("io.realm:realm-gradle-plugin:10.11.1")
+    }
+}

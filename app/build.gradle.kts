@@ -1,6 +1,10 @@
 plugins {
     id("com.android.application")
+    id ("org.jetbrains.kotlin.kapt")
+    id ("kotlin-kapt")
 }
+
+apply plugin: ("realm-android")
 
 android {
     namespace = "com.example.notesapp"
@@ -30,6 +34,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
 
 dependencies {
 
