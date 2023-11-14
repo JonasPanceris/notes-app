@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#03A9F4"
+    android:padding="20dp"
+    tools:context=".AddNoteActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/titleView"
+        android:text="Add new note"
+        android:textColor="@color/white"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_margin="25dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_corner"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/titleInput"
+        android:hint="Title"
+        android:background="#03A9F4"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/descriptionInput"
+        android:hint="Description"
+        android:background="#03A9F4"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:lines="10"
+        android:gravity="top"
+        />
+
+<com.google.android.material.button.MaterialButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Save Note"
+    android:layout_gravity="center"
+    android:id="@+id/saveBtn"
+    android:background="@color/white"
+    android:textColor="#03A9F4"
+
+    />
+
+</LinearLayout>
+
+
+    </LinearLayout>
