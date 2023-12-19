@@ -1,42 +1,84 @@
 package com.example.notesapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-public class AddNoteActivity extends AppCompatActivity {
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.matcher.IntentMatchers;
+import androidx.test.espresso.matcher.ViewMatchers;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_note);
+import com.example.notesapp.AddNoteActivity;
+import com.example.notesapp.MainActivity;
+import com.example.notesapp.Notes;
+import com.example.notesapp.R;
+import com.google.android.material.button.MaterialButton;
 
-        EditText titleInput = findViewById(R.id.titleInput);
-        EditText descriptionInput = findViewById(R.id.descriptionInput);
-        MainActivity saveBtn = findViewById(R.id.saveBtn);
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
-        Realm.init(getApplicationContext());
-        Realm realm = Realm.getDefaultInstance();
+import io.realm.Realm;
+import io.realm.RealmResults;
 
-        saveBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                String title = titleInput.getText().toString();
-                String description = descriptionInput.getText().toString();
-                long createdTime = System.currentTimeMillis();
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class AddNoteActivityTest {
 
-                realm.beginTransaction();
-                Notes note = realm.createObject(Notes.class);
-                note.setTitle(title);
-                note.setDescription(description);
-                note.setCreatedTime(createdTime);
-                realm.commitTransaction();
-                Toast.makeText(getApplicationContext(),"Note Save",Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+    @Mock
+    private Realm mockRealm;
+
+    @Mock
+    private RealmResults<Notes> mockNotesList;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        Intents.init();
+    }
+
+    @After
+    public void tearDown() {
+        Intents.release();
+    }
+
+    @Test
+    public void testSaveButtonClicked() {
+        ActivityScenario<AddNoteActivity> scenario = ActivityScenario.launch(AddNoteActivity.class);
+
+        EditText mockTitleInput = Mockito.mock(EditText.class);
+        EditText mockDescriptionInput = Mockito.mock(EditText.class);
+        MaterialButton mockSaveBtn = Mockito.mock(MaterialButton.class);
+
+        Mockito.when(scenario.getActivity().findViewById(R.id.titleInput)).thenReturn(mockTitleInput);
+        Mockito.when(scenario.getActivity().findViewById(R.id.descriptionInput)).thenReturn(mockDescriptionInput);
+        Mockito.when(scenario.getActivity().findViewById(R.id.saveBtn)).thenReturn(mockSaveBtn);
+
+        Mockito.when(mockTitleInput.getText()).thenReturn("Test Title");
+        Mockito.when(mockDescriptionInput.getText()).thenReturn("Test Description");
+
+        Mockito.when(mockRealm.createObject(Notes.class)).thenReturn(new Notes());
+
+        Espresso.onView(ViewMatchers.withId(R.id.saveBtn))
+                .perform(ViewActions.click());
+
+        // Add your verification steps here, for example:
+        Mockito.verify(mockRealm).beginTransaction();
+        Mockito.verify(mockRealm.createObject(Notes.class)).setTitle("Test Title");
+        Mockito.verify(mockRealm.createObject(Notes.class)).setDescription("Test Description");
+        Mockito.verify(mockRealm.createObject(Notes.class)).setCreatedTime(Mockito.anyLong());
+        Mockito.verify(mockRealm).commitTransaction();
+
+        // You can add more verifications based on your code logic
+
+        scenario.close();
     }
 }

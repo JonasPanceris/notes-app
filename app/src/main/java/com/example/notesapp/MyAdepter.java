@@ -1,97 +1,81 @@
 package com.example.notesapp;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import com.example.notesapp.MyAdepter.MyAdapter;
+import com.example.notesapp.Notes;
+import com.example.notesapp.R;
 
-import java.text.DateFormat;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
-public class MyAdepter {
+import java.util.ArrayList;
+import java.util.List;
 
-    Context context;
-    RealmResults<Notes> notesList;
+import io.realm.RealmResults;
 
-    public MyAdepter(Context context, RealmResults<Notes> notesList) {
-        this.context = context;
-        this.notesList = notesList;
+@RunWith(MockitoJUnitRunner.class)
+public class MyAdapterTest {
+
+    @Mock
+    private Context mockContext;
+
+    @Mock
+    private RealmResults<Notes> mockNotesList;
+
+    @Mock
+    private MyAdapter.MyViewHolder mockViewHolder;
+
+    @Mock
+    private View mockView;
+
+    private MyAdapter myAdapter;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        myAdapter = new MyAdapter(mockContext, mockNotesList);
     }
 
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_view,parent,false));
-        }
+    @Test
+    public void testOnCreateViewHolder() {
+        ViewGroup mockParent = mock(ViewGroup.class);
+        LayoutInflater mockInflater = mock(LayoutInflater.class);
 
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        when(mockContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).thenReturn(mockInflater);
+        when(mockInflater.inflate(R.layout.item_view, mockParent, false)).thenReturn(mockView);
 
-            Notes notes = notesList.get(position);
-            holder.timeOutput.setText(notes.getTitle());
-            holder.descriptionOutput.setText(notes.getDescription());
+        MyAdapter.MyViewHolder viewHolder = myAdapter.onCreateViewHolder(mockParent, 0);
 
-            String formatedTime = DateFormat.getDateTimeInstance().format(notes.createdTime);
-            holder.titleOutput.setText(formatedTime);
-
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
-
-                @Override
-                public boolean onLongClick(View v){
-
-                    PopupMenu menu = new PopupMenu(context,v);
-                    menu.setOnMenu().add("DELETE");
-                    menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                          if(item.getTitle().eguals("DELETE")){
-                              //delete the note
-                              Realm realm = Realm.getDefaultInstance();
-                              realm.beginTransaction();
-                              notes.deleteFromRealm();
-                              realm.commitTransaction();
-                              Toast.makeText(context,"Note delete", Toast.LENGTH_SHORT).show();
-                          }
-
-                            return true;
-                        }
-                    });
-
-                    menu.show();
-
-                    return true;
-                }
-
-            });
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return  notesList.size();
-        }
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            TextView titleOutput;
-            TextView descriptionOutput;
-            TextView timeOutput;
-
-            public MyViewHolder(@NonNull View itemView) {
-                super(itemView);
-
-                titleOutput = itemView.findViewById(R.id.titleOutput);
-                descriptionOutput = itemView.findViewById(R.id.descriptionOutput);
-                timeOutput = itemView.findViewById(R.id.timeOutput);
-            }
-        }
-
+        assertEquals(viewHolder.itemView, mockView);
     }
+
+    @Test
+    public void testOnBindViewHolder() {
+        int position = 0;
+
+        Notes mockNotes = mock(Notes.class);
+        when(mockNotesList.get(position)).thenReturn(mockNotes);
+
+        myAdapter.onBindViewHolder(mockViewHolder, position);
+
+        // Add your verification steps here, for example:
+        verify(mockViewHolder).titleOutput.setText(mockNotes.getTitle());
+        verify(mockViewHolder).descriptionOutput.setText(mockNotes.getDescription());
+        // ... and so on
+    }
+
+    // Add more tests for other methods if needed
 }

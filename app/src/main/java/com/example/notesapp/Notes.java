@@ -1,32 +1,34 @@
 package com.example.notesapp;
-import io.realm.RealmObject;
 
-public class Notes  extends RealmObject {
-    String title;
-    String description;
-    long createdTime;
+import org.junit.Test;
 
-    public String getTitle() {
-        return title;
+import static org.junit.Assert.assertEquals;
+
+public class NotesTest {
+
+    @Test
+    public void testSetTitle() {
+        Notes notes = new Notes();
+        String title = "Test Title";
+        notes.setTitle(title);
+        assertEquals(title, notes.getTitle());
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    @Test
+    public void testSetDescription() {
+        Notes notes = new Notes();
+        String description = "Test Description";
+        notes.setDescription(description);
+        assertEquals(description, notes.getDescription());
     }
 
-    public String getDescription() {
-        return description;
+    @Test
+    public void testSetCreatedTime() {
+        Notes notes = new Notes();
+        long createdTime = System.currentTimeMillis();
+        notes.setCreatedTime(createdTime);
+        assertEquals(createdTime, notes.getCreatedTime());
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public long getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(long createdTime) {
-        this.createdTime = createdTime;
-    }
+    // You can add more tests if needed, for example, testing getters
 }
